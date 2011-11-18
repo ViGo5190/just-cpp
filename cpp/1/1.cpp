@@ -29,14 +29,23 @@ inline int size_of(){return size;}
 void resize(size_t t){
 	delete[] p;
 	p 	= new int[t];
+    size =  t;
 	}
 
-array operator =(array& rhs){
-	size 	= rhs.size_of();
-	resize(size);
-	for (size_t i=0;i<size;i++){
-		p[i]	= rhs.get(i);
+void push_back(int a){
+    
+    }
+
+array operator =( array& rhs){
+	//size 	= rhs.size_of();
+	resize(rhs.size_of());
+	for (size_t i=0;i<rhs.size_of();i++){
+		//cout << rhs.get(i)<< " " << i << endl;
+        p[i]	= rhs.get(i);
+        //cout << rhs.get(i)<< " " << i << " "<< p[i] << endl;
+
 		}
+    return *this;    
 	}
 //inline bool operator==(array& f, array& s){
 //	return true;
@@ -66,9 +75,11 @@ for (size_t i=0;i<m.size_of();i++){
 	cout << m[i] << " ";
 	}
 cout << endl;
-
+cout<< "qqq" <<endl;
 m = n;
+cout << "www" <<endl;
 n.set(9,100000);
+
 for (size_t i=0;i<n.size_of();i++){
 	cout << n[i] << " ";
 	}
