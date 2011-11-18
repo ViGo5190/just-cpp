@@ -2,6 +2,12 @@
 #include <algorithm>
 using namespace std;
 
+inline size_t min(size_t first, size_t second){
+    return first<=second?first:second;
+}
+inline size_t max(size_t first, size_t second){
+    return first>=second?first:second;
+}
 class array{
 private:
 	int 	*p;
@@ -27,23 +33,29 @@ void set(size_t i, int v){
 	}
 inline int size_of(){return size;}
 void resize(size_t t){
-	delete[] p;
-	p 	= new int[t];
+	int *newp = new int[t];
+    for (int i=0;i<max(size,t);i++){
+        if (i<min(size,t)) { newp[i] = p[i];}
+        else { newp[i] = 0;}
+    }
+
+    delete[] p;
+	p 	= newp;
     size =  t;
 	}
 
 void push_back(int a){
     
+    resize(size+1);
+    p[size-1] = a;
+
     }
 
 array operator =( array& rhs){
 	//size 	= rhs.size_of();
 	resize(rhs.size_of());
 	for (size_t i=0;i<rhs.size_of();i++){
-		//cout << rhs.get(i)<< " " << i << endl;
         p[i]	= rhs.get(i);
-        //cout << rhs.get(i)<< " " << i << " "<< p[i] << endl;
-
 		}
     return *this;    
 	}
@@ -102,6 +114,20 @@ for (size_t i=0;i<k.size_of();i++){
 	cout << k[i] << " ";
 	}
 cout << endl;
+
+k.resize(22);
+
+for (size_t i=0;i<k.size_of();i++){
+    cout << k[i] << " ";
+    }
+cout << endl;
+
+k.push_back(13);
+for (size_t i=0;i<k.size_of();i++){
+    cout << k[i] << " ";
+    }
+cout << endl;
+
 
 
 cout << k[0]<<endl;
