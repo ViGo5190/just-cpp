@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <string>
 
 
 using namespace std;
@@ -12,11 +12,17 @@ int mysolve(){
     ofstream out("output.txt");
     in >> n >> k;
     in >> str;
-    
-    short *dp[5001];
-    for (int i = 0; i < 5001; i++) {
-        short d[5001];
+    /*
+    short *dp[n+1];
+    for (int i = 0; i < n+1; i++) {
+        short d[n+1];
         dp[i] = d;
+    }
+    */
+    short **dp;
+    dp = new short*[n+1];
+    for (int i=0; i < n+1; i++){
+        dp[i] = new short[n+1];
     }
     
     for ( int i = 1; i < n; ++i ){
@@ -32,11 +38,15 @@ int mysolve(){
     }
     int res = n;
     for ( int i = 0; i<n; ++i) {
+        //for ( int j = 0; j<=i; ++j) cout << dp[i][j]<< " ";
         for ( int j = i + 1; j < n; ++j ){
+            //cout << dp[i][j] << "! ";
             if (dp[i][j] != 1e4){
                 res++;
             }
         }
+
+        //cout << endl;
     }
     out << res;
     
