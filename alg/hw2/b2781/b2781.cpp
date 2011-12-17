@@ -12,159 +12,188 @@
 
 using namespace std;
 
-struct node{
-    int x;
-    int y;
-    int label;
-    struct node *parent;
-    struct node *left;
-    struct node *right;
-};
-
-typedef node *pnode;
-
 ifstream in("input.txt");
 ofstream out("output.txt");
+
+class vertex{
+    public:
+    int x, y, label;
+    struct vertex *parent, *left, *right;
+    
+    vertex() {}
+    
+    void set(int xi, int yi, int labeli){
+        x = xi;
+        y = -yi;
+        label = labeli;
+        parent = NULL;
+        left = NULL;
+        right = NULL;
+    }
+    
+    vertex& operator=(const vertex& a){
+        x = a.x;
+        y = a.y;
+        label = a.label;
+        parent = parent;
+        left = left;
+        right = right;
+        return *this;
+    }
+
+    friend void swap (vertex& a, vertex& b);
+};
+
+void swap (vertex& a, vertex& b){
+    vertex shift;
+    shift = a;
+    a = b;
+    b = shift;
+}
+
+typedef vertex *pvertex;
 
 
 class decTree{
     private:
     int treeSize;
-    node *nodes;
-    pnode *sorted;
-    pnode root;
+    vertex *vertexs;
+    pvertex *ordered;
+    pvertex root;
+    int vertexCount;
     
-    void _insertionSort(pnode *pnodes , int left, int right){
-        pnode temp;
+    void _sortIns(pvertex *pvertexs , int left, int right){
+        pvertex shift;
 
         for (int i = left + 1; i < right; i++){
             int j = i - 1;
-            temp = pnodes[i];
-            while ((j >= left) && (pnodes[j]->x > temp->x)){
-                pnodes[j + 1] = pnodes[j];
-                j--;
+            shift = pvertexs[i];
+            
+            for (int k = i-1; ((k >= left) && (pvertexs[j]->x > shift->x)) ; k--, j--){
+                pvertexs[k + 1] = pvertexs[k];
             }
-            pnodes[j + 1] = temp;
+            pvertexs[j + 1] = shift;
         }
     }
 
-    void _quickSort(pnode *pnodes, int left, int right){
+    void _sortQuick(pvertex *pvertexs, int left, int right){
         srand(time(NULL));
         int l = left;
         int r = right-1;
-        pnode temp, p;
+        pvertex p;
 
-        p = pnodes[l + rand() % (right - left)];
+        p = pvertexs[l + rand() % (right - left)];
 
         do{
-            while (pnodes[l]->x < p->x) {
+            while (pvertexs[l]->x < p->x) {
                 l++;
             }
-            while (pnodes[r]->x > p->x) {
+            while (pvertexs[r]->x > p->x) {
                 r--;
             }
 
             if (l <= r){
-                temp = pnodes[l];
-                pnodes[l] = pnodes[r];
-                pnodes[r] = temp;
-                l++; 
-                r--;
+                swap(pvertexs[l++], pvertexs[r--]);
             }
         } while (l <= r);
 
-        if (r - left > 20){
-            _quickSort(pnodes, left, r + 1);
+        if (r - left > 16){
+            _sortQuick(pvertexs, left, r + 1);
         } else if (r > left){
-            _insertionSort(pnodes, left, r + 1);
+            _sortIns(pvertexs, left, r + 1);
         }
 
-        if (right - l > 20){
-            _quickSort(pnodes, l, right);
+        if (right - l > 16){
+            _sortQuick(pvertexs, l, right);
         } else if (l < right - 1){
-            _insertionSort(pnodes, l , right);
+            _sortIns(pvertexs, l , right);
         }
         ////
 
     }
 
+    void _makeTree(){
+        pvertex last = NULL;
+        root = ordered[0];
+        last = root;
+        for (int i = 1; i < treeSize; i++){
+            while (last->parent != NULL && ordered[i]->y > last->y){
+                last = last->parent;
+            }
+            if (ordered[i]->y <= last->y){
+                ordered[i]->left = last->right;
+                ordered[i]->parent = last;
+                if (last->right){
+                    last->right->parent = ordered[i];
+                }
+                last->right = ordered[i];
+
+            } else {
+                ordered[i]->left = last;
+                last->parent = ordered[i];
+                root = ordered[i];
+            }
+            last = ordered[i];
+        }
+        
+    }
+
+
+
     public:
     
-    void addNode(int i, int x, int y){
-        nodes[i].x = x;
-        nodes[i].y = -y;
-        nodes[i].label = i + 1;
-        nodes[i].parent = NULL;
-        nodes[i].left = NULL;
-        nodes[i].right = NULL;
-        sorted[i] = nodes + i;
+    void vertexAdd(int x, int y){
+        vertexs[vertexCount].set(x, y, vertexCount + 1);
+        ordered[vertexCount] = vertexs + vertexCount;
+        vertexCount++;
+        _sortQuick(ordered, 0, treeSize);
+        _makeTree(); 
+    }   
 
+    decTree(int size):treeSize(size){
+        vertexCount = 0;
+        vertexs = new vertex[treeSize];
+        ordered = new pvertex[treeSize];    
     }
 
     decTree(){
         int a , b;
-        
+        vertexCount = 0;
         
         in >> treeSize;
-        nodes = new node[treeSize];
-        sorted = new pnode[treeSize];
+        vertexs = new vertex[treeSize];
+        ordered = new pvertex[treeSize];
         for (int i = 0; i < treeSize; i++ ){
             in >> a >> b;
-            addNode(i , a , b);
+            vertexs[vertexCount].set(a, b, vertexCount + 1);
+            ordered[vertexCount] = vertexs + vertexCount;
+            vertexCount++;
         }
-        _quickSort(sorted, 0, treeSize);   
+        _sortQuick(ordered, 0, treeSize);
+        _makeTree();   
     }
 
     
-
-    
-    
     
 
-    void buildTree(){
-        pnode last = NULL;
-        
-        if (treeSize > 0){
-            root = sorted[0];
-            last = root;
-            for (int i = 1; i < treeSize; i++){
-                while (last->parent != NULL && sorted[i]->y > last->y){
-                    last = last->parent;
-                }
-                if (sorted[i]->y <= last->y){
-                    sorted[i]->left = last->right;
-                    sorted[i]->parent = last;
-                    if (last->right){
-                        last->right->parent = sorted[i];
-                    }
-                    last->right = sorted[i];
-
-                } else {
-                    sorted[i]->left = last;
-                    last->parent = sorted[i];
-                    root = sorted[i];
-                }
-                last = sorted[i];
-            }
-        }
-    }
-
-    void displayResults(){
+    void resultsDisplay(){
         int parent, left, right;
         out << "YES" << endl;
         for (int i = 0; i < treeSize; i++){
-            if (nodes[i].parent) {
-                parent = nodes[i].parent->label;
+            if (vertexs[i].parent) {
+                parent = vertexs[i].parent->label;
             } else {
                 parent = 0;
             }
-            if (nodes[i].left){
-                left = nodes[i].left->label;
+            
+            if (vertexs[i].left){
+                left = vertexs[i].left->label;
             }  else {
                 left = 0;
             }
-            if (nodes[i].right) {
-                right = nodes[i].right->label;
+            
+            if (vertexs[i].right) {
+                right = vertexs[i].right->label;
             } else {
                 right = 0;
             }
@@ -178,10 +207,7 @@ class decTree{
 
 
 int main(void){
-    
-    
     decTree *mytree = new decTree();
-    mytree->buildTree();
-    mytree->displayResults();
+    mytree->resultsDisplay();
     return 0;
 }
