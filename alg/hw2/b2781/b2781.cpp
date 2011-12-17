@@ -11,9 +11,7 @@
 #include <stdlib.h>
 
 using namespace std;
-/**
- * standart solution for nodes
- */
+
 struct node{
     int x;
     int num;
@@ -27,6 +25,7 @@ typedef node *pnode;
 
 ifstream in("input.txt");
 ofstream out("output.txt");
+
 
 class decTree{
     private:
