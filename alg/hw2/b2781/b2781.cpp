@@ -14,8 +14,8 @@ using namespace std;
 
 struct node{
     int x;
-    int num;
     int y;
+    int label;
     struct node *parent;
     struct node *left;
     struct node *right;
@@ -68,7 +68,7 @@ class decTree{
                 temp = pnodes[l];
                 pnodes[l] = pnodes[r];
                 pnodes[r] = temp;
-                l++;
+                l++; 
                 r--;
             }
         } while (l <= r);
@@ -78,6 +78,7 @@ class decTree{
         } else if (r > left){
             _insertionSort(pnodes, left, r + 1);
         }
+
         if (right - l > 20){
             _quickSort(pnodes, l, right);
         } else if (l < right - 1){
@@ -89,12 +90,24 @@ class decTree{
 
     public:
     
+    void addNode(int i, int x, int y){
+        nodes[i].x = x;
+        nodes[i].y = -y;
+        nodes[i].label = i + 1;
+        nodes[i].parent = NULL;
+        nodes[i].left = NULL;
+        nodes[i].right = NULL;
+        sorted[i] = nodes + i;
+
+    }
+
     decTree(){
         int a , b;
+        
+        
+        in >> treeSize;
         nodes = new node[treeSize];
         sorted = new pnode[treeSize];
-
-        in >> treeSize;
         for (int i = 0; i < treeSize; i++ ){
             in >> a >> b;
             addNode(i , a , b);
@@ -106,16 +119,7 @@ class decTree{
 
     
     
-    void addNode(int i, int x, int y){
-        nodes[i].x = x;
-        nodes[i].y = -y;
-        nodes[i].num = i + 1;
-        nodes[i].parent = NULL;
-        nodes[i].left = NULL;
-        nodes[i].right = NULL;
-        sorted[i] = nodes + i;
-
-    }
+    
 
     void buildTree(){
         pnode last = NULL;
@@ -145,28 +149,27 @@ class decTree{
         }
     }
 
-    void printResults(){
-        int p, l, r;
+    void displayResults(){
+        int parent, left, right;
         out << "YES" << endl;
         for (int i = 0; i < treeSize; i++){
-            
             if (nodes[i].parent) {
-                c = nodes.parent->num;
+                parent = nodes[i].parent->label;
             } else {
-                p = 0;
+                parent = 0;
             }
             if (nodes[i].left){
-                l = nodes[i].left->num;
+                left = nodes[i].left->label;
             }  else {
-                l = 0;
+                left = 0;
             }
             if (nodes[i].right) {
-                r = nodes[i].right->num;
+                right = nodes[i].right->label;
             } else {
-                r = 0;
+                right = 0;
             }
             
-            out << p << " " << l << " " << r << endl;
+            out << parent << " " << left << " " << right << endl;
         }
     }
 };
@@ -178,8 +181,7 @@ int main(void){
     
     
     decTree *mytree = new decTree();
-    
     mytree->buildTree();
-    mytree->printResults();
+    mytree->displayResults();
     return 0;
 }
