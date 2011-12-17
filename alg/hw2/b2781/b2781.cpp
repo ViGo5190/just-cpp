@@ -1,10 +1,19 @@
+/**
+ * task b aka 2781
+ * link: http://informatics.mccme.ru/moodle/mod/statements/view3.php?id=1974&chapterid=2781#1
+ * Copyright reserved.
+ * author: Gumeniuk Stanislav
+ */
+
 #include <iostream>
 #include <fstream>
 #include <time.h>
 #include <stdlib.h>
 
 using namespace std;
-
+/**
+ * standart solution for nodes
+ */
 struct node{
     int x;
     int num;
@@ -20,19 +29,13 @@ ifstream in("input.txt");
 ofstream out("output.txt");
 
 class decTree{
-    public:
+    private:
     int treeSize;
     node *nodes;
     pnode *sorted;
     pnode root;
     
-    
-    decTree(int a): treeSize(a){
-        nodes = new node[treeSize];
-        sorted= new pnode[treeSize];
-    }
-
-    void insertionSort(pnode *pnodes , int left, int right){
+    void _insertionSort(pnode *pnodes , int left, int right){
         pnode temp;
 
         for (int i = left + 1; i < right; i++){
@@ -46,47 +49,72 @@ class decTree{
         }
     }
 
-    void quickSort(pnode *pnodes, int left, int right){
+    void _quickSort(pnode *pnodes, int left, int right){
         srand(time(NULL));
         int l = left;
         int r = right-1;
         pnode temp, p;
 
-        p = pnodes[l+rand() % (right - left)];
+        p = pnodes[l + rand() % (right - left)];
 
         do{
-            while (pnodes[l]->x < p->x) l++;
-            while (pnodes[r]->x > p->x) r--;
+            while (pnodes[l]->x < p->x) {
+                l++;
+            }
+            while (pnodes[r]->x > p->x) {
+                r--;
+            }
 
             if (l <= r){
                 temp = pnodes[l];
                 pnodes[l] = pnodes[r];
                 pnodes[r] = temp;
-                l++; r--;
+                l++;
+                r--;
             }
         } while (l <= r);
 
-        if (r - left > 20)
-            quickSort(pnodes, left, r + 1);
-        else if (r > left)
-            insertionSort(pnodes, left, r + 1);
-
-        if (right - l > 20)
-            quickSort(pnodes, l, right);
-        else if (l < right - 1)
-            insertionSort(pnodes, l , right);
+        if (r - left > 20){
+            _quickSort(pnodes, left, r + 1);
+        } else if (r > left){
+            _insertionSort(pnodes, left, r + 1);
+        }
+        if (right - l > 20){
+            _quickSort(pnodes, l, right);
+        } else if (l < right - 1){
+            _insertionSort(pnodes, l , right);
+        }
         ////
 
     }
+
+    public:
+    
+    decTree(){
+        int a , b;
+        nodes = new node[treeSize];
+        sorted = new pnode[treeSize];
+
+        in >> treeSize;
+        for (int i = 0; i < treeSize; i++ ){
+            in >> a >> b;
+            addNode(i , a , b);
+        }
+        _quickSort(sorted, 0, treeSize);   
+    }
+
+    
+
+    
     
     void addNode(int i, int x, int y){
         nodes[i].x = x;
         nodes[i].y = -y;
-        nodes[i].num = i+1;
+        nodes[i].num = i + 1;
         nodes[i].parent = NULL;
         nodes[i].left = NULL;
         nodes[i].right = NULL;
-        sorted[i] = nodes+i;
+        sorted[i] = nodes + i;
 
     }
 
@@ -97,13 +125,15 @@ class decTree{
             root = sorted[0];
             last = root;
             for (int i = 1; i < treeSize; i++){
-                while (last->parent != NULL && sorted[i]->y > last->y)
+                while (last->parent != NULL && sorted[i]->y > last->y){
                     last = last->parent;
+                }
                 if (sorted[i]->y <= last->y){
                     sorted[i]->left = last->right;
                     sorted[i]->parent = last;
-                    if (last->right)
+                    if (last->right){
                         last->right->parent = sorted[i];
+                    }
                     last->right = sorted[i];
 
                 } else {
@@ -120,9 +150,23 @@ class decTree{
         int p, l, r;
         out << "YES" << endl;
         for (int i = 0; i < treeSize; i++){
-            p = (nodes[i].parent) ? nodes[i].parent->num : 0;
-            l = (nodes[i].left) ? nodes[i].left->num : 0;
-            r = (nodes[i].right) ? nodes[i].right->num : 0;
+            
+            if (nodes[i].parent) {
+                c = nodes.parent->num;
+            } else {
+                p = 0;
+            }
+            if (nodes[i].left){
+                l = nodes[i].left->num;
+            }  else {
+                l = 0;
+            }
+            if (nodes[i].right) {
+                r = nodes[i].right->num;
+            } else {
+                r = 0;
+            }
+            
             out << p << " " << l << " " << r << endl;
         }
     }
@@ -132,18 +176,10 @@ class decTree{
 
 
 int main(void){
-    ifstream in("input.txt");
-    ofstream out("output.txt");
     
-    int size, a, b;
-    in >>  size;
     
-    decTree *mytree = new decTree(size);
-    for (int i = 0; i < size; i++ ){
-        in >> a >> b;
-        mytree->addNode(i,a,b);
-    }
-    mytree->quickSort(mytree->sorted, 0, mytree->treeSize);
+    decTree *mytree = new decTree();
+    
     mytree->buildTree();
     mytree->printResults();
     return 0;
