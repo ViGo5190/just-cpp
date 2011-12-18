@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-
+#define MAX 1024
 using namespace std;
 
-char ram[1024];
+char ram[MAX];
 
 class MCB{
 	public:
@@ -26,7 +26,7 @@ class MCB{
 	
 };
 
-//static MCB* mem = (MCB*)ram;
+
 
 
 size_t lastMCB = sizeof(MCB);
@@ -34,31 +34,52 @@ size_t lastMCB = sizeof(MCB);
 void* my_alloc (size_t user_size){
 	MCB* mem =  (MCB*)ram;
 	MCB* prev = mem;
-	
-	cout << "sss" << user_size << endl;
-	while ((mem->next)&&(mem->index > 0)){
+	cout << "start " << mem << " end " << (MCB*)(mem + sizeof(ram)) << " " << sizeof(ram) << endl; 
+	//cout << "sss" << user_size << endl;
+	while ((mem->next!=0)&&(mem->index > 0)){
+		//cout << "j--" << endl;
 		prev = mem;
+		//cout << " w "<< mem << " " << mem->next << endl;
+		
+		cout  <<  (MCB*)(mem + sizeof(MCB) + user_size*sizeof(char)) << " " << (MCB*)( (MCB*)ram + sizeof(char)*1024) << endl;
+		if ((MCB*)(mem + sizeof(MCB) + user_size*sizeof(char)) > (MCB*)( (MCB*)ram + sizeof(char)*MAX)){
+			return NULL;
+		}
+		
 		mem = mem->next;
-		cout << " q " << mem   << " ! " << prev<< endl;
+		//cout << " q "<<prev->index << " " << mem  << " next---" << " ! " << prev <<endl;
+		//cout << "     " << mem->next << " " << mem->index<<endl;
 	}
 
 	
 	
+	//cout << ">> " << sizeof(MCB) << " " << sizeof(mem) << endl;
 	
-	mem->next = (MCB*)(mem + sizeof(mem) + mem->size);
+
+
+	mem->next = (MCB*)(mem + sizeof(MCB) + user_size*sizeof(char));
 	
 	if (prev->index>0){
 		mem->prev = prev;
-		prev->next = mem;
-		mem -> index = prev->index + 1;
+		mem->index = prev->index + 1;
 		
 			
 	} else {
 		mem->index = 1;
 	}
+
 	mem->size = user_size;
-	cout << prev->index << " ~" <<mem->index <<  "!!" << mem->next << " prev = " << mem->prev <<endl;
 	
+	cout << prev->index << " ~" <<mem->index << " " <<mem << " "<<  "!!next = " << mem->next << " prev = " << mem->prev <<endl;
+	/*
+	MCB* qqq = (MCB*)ram;
+	for (int i = 1; i<=mem->index;i++){
+		
+		
+		cout << "bal = " <<qqq->index << " cur:" << qqq << " next:" << qqq->next << " prev:"<<qqq->prev << endl;
+		qqq = qqq->next;
+	}
+	*/
 	return mem;
 
 	
