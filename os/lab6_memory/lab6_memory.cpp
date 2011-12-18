@@ -1,34 +1,48 @@
 #include <iostream>
-#include <iomanip>
+#include <fstream>
 #include <algorithm>
 
 using namespace std;
-int static const N = 1024;
 
-char memory[N];
+char ram[1024];
 
-struct myMCB {
-    unsigned int size;
-    myMCB *start;
-    myMCB *end;
+class MCB{
+	public:
+	size_t magicStart;
+	size_t magicEnd;
+	int size;
+	MCB **ptr;
+	
+	MCB *next;
+	MCB *prev;
+	
+	MCB(){
+		//index = 0;
+		//ptr = 1024;
+		//size = 0;
+		next = (MCB*)ram;
+		size = 1;
+	}	
+	
 };
 
-void* my_alloc(size_t size){
-    return 0;
+static MCB* mem = (MCB*)ram;
+
+
+size_t lastMCB = sizeof(MCB);
+
+int my_alloc (size_t user_size){
+	MCB** iterator = &mem;
+	cout << iterator.->size;
 }
 
-void my_delete(void * ptr){
+int main(void){
+	char a = '7';
+	char* b;
+	b = (char*)&a;
+	cout << b << endl;
 
-    return;
-}
+	
 
-int main(){
-    fill(memory,memory+N,0);
-    cout << &memory[0] << "-"<<&memory[N+1];
-    char* q = &memory[0];
-    *q = '1';
-    cout << endl<<q;
-    
-    cout << endl<<"end";  
-    return 0;
+	return 0;
 }
