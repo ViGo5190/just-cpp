@@ -22,14 +22,7 @@ class vertex{
     
     vertex() {}
     
-    void set(int xi, int yi, int labeli) {
-        x = xi;
-        y = -yi;
-        label = labeli;
-        parent = NULL;
-        left = NULL;
-        right = NULL;
-    }
+    
     
     vertex(int xi, int yi, int labeli) {
         x = xi;
@@ -40,26 +33,20 @@ class vertex{
         right = NULL;
     }
     /*
-    vertex& operator=(const vertex& a) {
-        x = a.x;
-        y = a.y;
-        label = a.label;
+    vertex& operator=(const vertex *a) {
+        x = a->x;
+        y = a->y;
+        label = a->label;
         parent = parent;
         left = left;
         right = right;
         return *this;
     }
     */
-    //friend void swap (vertex& a, vertex& b);
+    
 };
 
-/*void swap (vertex& a, vertex& b) {
-    vertex shift;
-    shift = a;
-    a = b;
-    b = shift;
-}
-*/
+
 typedef vertex *pvertex;
 
 
@@ -71,7 +58,9 @@ class decTree{
     pvertex root;
     int vertexCount;
     
-    void _sortIns(pvertex *pvertexs, int left, int right) {
+    public:
+
+    void sortIns(pvertex *pvertexs, int left, int right) {
         pvertex shift;
 
         for (int i = left + 1; i < right; i++) {
@@ -85,7 +74,7 @@ class decTree{
         }
     }
 
-    void _sortQuick(pvertex *pvertexs, int left, int right){
+    void sortQuick(pvertex *pvertexs, int left, int right){
         srand(time(NULL));
         int l = left;
         int r = right-1;
@@ -107,21 +96,21 @@ class decTree{
         } while (l <= r);
 
         if (r - left > 16) {
-            _sortQuick(pvertexs, left, r + 1);
+            sortQuick(pvertexs, left, r + 1);
         } else if (r > left) {
-            _sortIns(pvertexs, left, r + 1);
+            sortIns(pvertexs, left, r + 1);
         }
 
         if (right - l > 16) {
-            _sortQuick(pvertexs, l, right);
+            sortQuick(pvertexs, l, right);
         } else if (l < right - 1) {
-            _sortIns(pvertexs, l , right);
+            sortIns(pvertexs, l , right);
         }
         ////
 
     }
 
-    void _makeTree(){
+    void makeTree(){
         pvertex last = NULL;
         root = ordered[0];
         last = root;
@@ -149,15 +138,15 @@ class decTree{
 
 
 
-    public:
+    
     
     void vertexAdd(int x, int y) {
-        vertexs[vertexCount].set(x, y, vertexCount + 1);
-        //vertexs[vertexCount] = new vertex(x, y, vertexCount + 1);
+        //vertexs[vertexCount].set(x, y, vertexCount + 1);
+        vertexs[vertexCount] = *(new vertex(x, y, vertexCount + 1));
         ordered[vertexCount] = vertexs + vertexCount;
         vertexCount++;
-        _sortQuick(ordered, 0, treeSize);
-        _makeTree(); 
+        sortQuick(ordered, 0, treeSize);
+        makeTree(); 
     }   
 
     decTree(int size):treeSize(size) {
@@ -165,6 +154,9 @@ class decTree{
         vertexs = new vertex[treeSize];
         ordered = new pvertex[treeSize];    
     }
+
+    
+
 
     explicit decTree() {
         int a , b;
@@ -175,12 +167,13 @@ class decTree{
         ordered = new pvertex[treeSize];
         for (int i = 0; i < treeSize; i++ ) {
             in >> a >> b;
-            vertexs[vertexCount].set(a, b, vertexCount + 1);
+            //vertexs[vertexCount].set(a, b, vertexCount + 1);
+            vertexs[vertexCount] = *(new vertex(a, b, vertexCount + 1));
             ordered[vertexCount] = vertexs + vertexCount;
             vertexCount++;
         }
-        _sortQuick(ordered, 0, treeSize);
-        _makeTree();   
+        sortQuick(ordered, 0, treeSize);
+        makeTree();   
     }
 
     
