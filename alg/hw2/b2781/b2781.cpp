@@ -12,8 +12,7 @@
 
 using namespace std;
 
-ifstream in("input.txt");
-ofstream out("output.txt");
+
 
 class vertex{
     public:
@@ -32,17 +31,7 @@ class vertex{
         left = NULL;
         right = NULL;
     }
-    /*
-    vertex& operator=(const vertex *a) {
-        x = a->x;
-        y = a->y;
-        label = a->label;
-        parent = parent;
-        left = left;
-        right = right;
-        return *this;
-    }
-    */
+    
     
 };
 
@@ -149,19 +138,16 @@ class decTree{
         makeTree(); 
     }   
 
-    decTree(int size):treeSize(size) {
+    explicit decTree(int size):treeSize(size) {
         vertexCount = 0;
         vertexs = new vertex[treeSize];
         ordered = new pvertex[treeSize];    
     }
 
     
-
-
-    explicit decTree() {
+    void loadData() {
+        ifstream in("input.txt");
         int a , b;
-        vertexCount = 0;
-        
         in >> treeSize;
         vertexs = new vertex[treeSize];
         ordered = new pvertex[treeSize];
@@ -172,14 +158,23 @@ class decTree{
             ordered[vertexCount] = vertexs + vertexCount;
             vertexCount++;
         }
+        in.close();
         sortQuick(ordered, 0, treeSize);
-        makeTree();   
     }
 
-    
+    decTree() {
+        vertexCount = 0;
+          
+    }
+
+    ~decTree() {
+        delete[] vertexs;
+        delete[] ordered;
+    }
     
 
     void resultsDisplay() {
+        ofstream out("output.txt");
         int parent, left, right;
         out << "YES" << endl;
         for (int i = 0; i < treeSize; i++) {
@@ -203,6 +198,8 @@ class decTree{
             
             out << parent << " " << left << " " << right << endl;
         }
+        out.flush();
+        out.close();
     }
 };
 
@@ -211,6 +208,8 @@ class decTree{
 
 int main(void) {
     decTree *mytree = new decTree();
+    mytree->loadData();
+    mytree->makeTree(); 
     mytree->resultsDisplay();
     return 0;
 }
