@@ -56,15 +56,14 @@ class decTree{
             int j = i - 1;
             shift = pvertexs[i];
             
-            for (int k = i-1; ((k >= left) && (pvertexs[j]->x > shift->x)) ; k--, j--) {
-                pvertexs[k + 1] = pvertexs[k];
+            for ( ; ((j >= left) && (pvertexs[j]->x > shift->x)) ; j--) {                
+                pvertexs[j + 1] = pvertexs[j];
             }
             pvertexs[j + 1] = shift;
         }
     }
 
-    void sortQuick(pvertex *pvertexs, int left, int right){
-        srand(time(NULL));
+    void sortQuick(pvertex *pvertexs, int left, int right) {
         int l = left;
         int r = right-1;
         pvertex p;
@@ -130,7 +129,6 @@ class decTree{
     
     
     void vertexAdd(int x, int y) {
-        //vertexs[vertexCount].set(x, y, vertexCount + 1);
         vertexs[vertexCount] = *(new vertex(x, y, vertexCount + 1));
         ordered[vertexCount] = vertexs + vertexCount;
         vertexCount++;
@@ -159,12 +157,16 @@ class decTree{
             vertexCount++;
         }
         in.close();
+    }
+
+    void init() {
+        srand(time(NULL));
         sortQuick(ordered, 0, treeSize);
+            
     }
 
     decTree() {
         vertexCount = 0;
-          
     }
 
     ~decTree() {
@@ -209,6 +211,7 @@ class decTree{
 int main(void) {
     decTree *mytree = new decTree();
     mytree->loadData();
+    mytree->init();
     mytree->makeTree(); 
     mytree->resultsDisplay();
     return 0;
