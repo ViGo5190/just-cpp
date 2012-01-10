@@ -9,21 +9,21 @@ class qwe {
 
 class qwewptr {
 	int a;
-	qwe *p;
+	qwewptr *p;
 		
 };
 
 class qwewtwoptr {
 	int a;
-	qwe *p;
-	qwe *l;
+	qwewtwoptr *p;
+	qwewtwoptr *l;
 		
 };
 
 class qwewtwoptrnoint {
 	
-	qwe *p;
-	qwe *l;
+	qwewtwoptrnoint *p;
+	qwewtwoptrnoint *l;
 		
 };
 

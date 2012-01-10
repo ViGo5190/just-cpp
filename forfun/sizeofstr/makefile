@@ -12,4 +12,8 @@ $(TARGET): $(OBJECTS)
 clean:
 	$(RM) $(OBJECTS) $(TARGET)
 
+x86:
+	g++ sizeofstr.cpp -o testx86 -m32
+
+
 .PHONY: all clean
