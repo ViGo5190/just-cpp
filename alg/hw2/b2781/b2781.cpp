@@ -149,12 +149,12 @@ class decTree{
         in >> treeSize;
         vertexs = new vertex[treeSize];
         ordered = new pvertex[treeSize];
-        for (int i = 0; i < treeSize; i++ ) {
+        for (vertexCount = 0; vertexCount < treeSize; vertexCount++ ) { //for (int i = 0; i < treeSize; i++ ) {
             in >> a >> b;
             //vertexs[vertexCount].set(a, b, vertexCount + 1);
             vertexs[vertexCount] = *(new vertex(a, b, vertexCount + 1));
             ordered[vertexCount] = vertexs + vertexCount;
-            vertexCount++;
+            //vertexCount++;
         }
         in.close();
     }
