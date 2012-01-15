@@ -23,13 +23,14 @@
 		//cout << c;
 		int q = (int)c;
 		if ((q>=48) && (q<=57)) {
-			num = num*10 + (q - 48);
-			
+			//num = num*10 + (q - 48);
+			num=q-48;
+			seq.push(num);
 
 				
 		} else if (c==' ') {
 			//cout << num << " ";
-			seq.push(num);
+			//seq.push(num);
 			num=0; 
 			
 		} else if (c=='+') {
@@ -37,21 +38,21 @@
 			seq.pop();
 			num += seq.top();
 			seq.pop();
-			//seq.push(num);
+			seq.push(num);
 			
 		} else if (c=='-') {
 			num = seq.top();
 			seq.pop();
 			num = seq.top() - num;
 			seq.pop();
-			//seq.push(num);
+			seq.push(num);
 			
 		} else if (c=='*') {
 			num = seq.top();
 			seq.pop();
 			num *= seq.top();
 			seq.pop();
-			//seq.push(num);
+			seq.push(num);
 			
 		}
 		
@@ -63,6 +64,7 @@
 	in.close();
 
 	ofstream out("output.txt");
+	num = seq.top();
 	out << num;
 	out.flush();
 	out.close();
