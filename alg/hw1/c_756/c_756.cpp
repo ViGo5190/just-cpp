@@ -18,59 +18,67 @@ using namespace std;
 int main(void) {
 	int n, k, t;
 	deque< pair<int, int> > arr;
-	deque< pair<int, int> > :: iterator it;
+	deque< pair<int, int> > :: iterator it, itdel;
 	//deque<int> arr;
 
 	ifstream in("input.txt");
+	ofstream out("output.txt");
 	in >> n >> k;
 	for (int i = 0; i < n; i++) {
+	//while (in >> t) {
 		in >> t;
 
 		if (k==1) {
 			cout << t << endl;
 		} else {
-
-			//cout << " i " << i << endl;
+			int del = 0;
 			
 			if (!arr.empty()) {
 				it = arr.begin();
-				//it = arr.end();
+				while ( !arr.empty() && it != arr.end() && ((*it).second < t )) {
+					if ((i>=k)&&((*it).first == i - k)) {
+						itdel = it;
+						del = 1;
+					}
+					it++;
+					
+
+				}
 			}
 
 			
-			while ( !arr.empty() && it != arr.end() && (*it).second < t) {
-			//while ( !arr.empty() && it != arr.begin() && (*it).second > t) {
-				//arr.pop_back();
-				//--it;
-				it++;
-
-			}
+			
 			
 			
 
-			pair<int, int> temppair(i,t);
 			if (arr.empty()) {
-				arr.push_back(temppair);
+				arr.push_back(make_pair(i,t));
 			} else {
-				arr.insert(it, temppair);
+				arr.insert(it, make_pair(i,t));
 			}
 
 			
 			
-			//cout << "if" << endl;
-			if (i >= k ) {
-				for (it = arr.begin(); it < arr.end(); it++ ){
+			if ((i >= k ) && (del==0)) {
+				it--;
+				for (; it < arr.end(); it++ ){
 				// /cout << "!" << (*it).first << "!" ;
 					if ((*it).first == i-k) {
-						arr.erase(it);
-						break;
+						//arr.erase(it);
+						itdel = it;
+						del = 1;
+						//break;
 					}
 				}
 				
 			}
+
+			if (del == 1) {
+				arr.erase(itdel);
+			}
 			/*
-			cout << endl;
-			for (int j = 0; j <= i ; j++) {
+			cout << endl ;
+			for (int j = 0; j < arr.size()  ; j++) {
 				cout << arr[j].second<<"|"<<arr[j].first << " ";
 			}  cout << " " << i-k<< endl;
 			*/	
@@ -79,10 +87,12 @@ int main(void) {
 
 		
 			if (i >= k-1) {
-				cout  << arr.front().second << endl;	
+				out  << arr.front().second << endl;	
 			}
 		}	
 	}
 	in.close();
+	out.flush();
+	out.close();
 	return 0;
 }
