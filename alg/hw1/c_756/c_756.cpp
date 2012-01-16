@@ -5,87 +5,64 @@
  * author: Gumeniuk Stanislav
  */
 
+#include <vector>
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include <deque>
-
 
 using namespace std;
 
+static const int MAX = 2147483647;
 
-
-int main(void) {
-	int n, k, t;
-	deque< pair<int, int> > arr;
-	deque< pair<int, int> > :: iterator it;
-	//deque<int> arr;
-
+int main () {
 	ifstream in("input.txt");
-	ofstream out("output.txt");
+	int n, k;
+	int t;
 	in >> n >> k;
-	for (int i = 0; i < n; i++) {
-	//while (in >> t) {
+	
+
+
+	vector <int> q;
+	vector <int> mins;
+
+	int tmin = MAX;
+
+	for (int i = 0; i < k; i++) {
 		in >> t;
-
-		if (k==1) {
-			out << t << endl;
-		} else {
-			int delq = 0;
-			
-			if (!arr.empty()) {
-				it = arr.begin();
-				while ( !arr.empty() && it != arr.end() && (*it).second < t ) {
-					//cout << "&"<< endl;
-					if ((delq == 0) && (i >= k ) && ((*it).first == i-k) ) {
-						cout << " delete " << (*it).first << " ";
-						arr.erase(it);
-						delq = 1;
-						if (it != arr.begin()) --it;
-						
-					}
-					it++;
-				}
-
-				arr.insert(it, make_pair(i,t));
-			} else {
-				arr.push_back(make_pair(i,t));	
-			}
-
-			
-			
-			
-			
-			if ((i >= k ) && (delq == 0)) {
-				if (it != arr.begin()) --it;
-				for (; it < arr.end(); it++ ){
-				//cout << "!" << (*it).first << "!" ;
-					if ((*it).first == i-k) {
-						cout << " delete " << (*it).first << " ";
-						arr.erase(it);
-			
-						break;
-					}
-				}
-				
-			}
-			
-			cout << endl ;
-			for (int j = 0; j < arr.size()  ; j++) {
-				cout << arr[j].second<<"|"<<arr[j].first << " ";
-			}  cout << " " << i-k<< endl;
-				
-			
-			
-
-		
-			if (i >= k-1) {
-				out  << arr.front().second << endl;	
-			}
-		}	
+		tmin = t < tmin ? t : tmin;
+		q.push_back(t);
 	}
-	in.close();
-	out.flush();
-	out.close();
+
+	mins.push_back(tmin);
+
+	
+
+	for (int i = k; i < n; i++) {
+		tmin = MAX;
+		in >> t;
+		q.push_back(t);
+		if (t <= mins[i - k]) {
+			mins.push_back(t);
+		} else if (q[0] == mins[i - k]) {
+
+			for (int j = 1; j <= k; j++) {
+				tmin = q[j] < tmin ? q[j] : tmin;
+			}
+			mins.push_back(tmin);
+		
+		} else {
+			mins.push_back(mins[i - k]);
+		}
+	for (int i = 0; i < n; i++) {
+		cout << q[i] << " ";
+	} cout << endl;
+		q.erase(q.begin());
+	
+	
+	}
+	/*
+	for (int i = 0; i < n - k + 1; i++) {
+		cout << mins[i] << endl;
+	}
+	*/
 	return 0;
 }
