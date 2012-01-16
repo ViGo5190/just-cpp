@@ -9,7 +9,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <deque>
-#include <map>
+
 
 using namespace std;
 
@@ -18,7 +18,7 @@ using namespace std;
 int main(void) {
 	int n, k, t;
 	deque< pair<int, int> > arr;
-	deque< pair<int, int> > :: iterator it, itdel;
+	deque< pair<int, int> > :: iterator it;
 	//deque<int> arr;
 
 	ifstream in("input.txt");
@@ -29,59 +29,52 @@ int main(void) {
 		in >> t;
 
 		if (k==1) {
-			cout << t << endl;
+			out << t << endl;
 		} else {
-			int del = 0;
+			int delq = 0;
 			
 			if (!arr.empty()) {
 				it = arr.begin();
-				while ( !arr.empty() && it != arr.end() && ((*it).second < t )) {
-					if ((i>=k)&&((*it).first == i - k)) {
-						itdel = it;
-						del = 1;
+				while ( !arr.empty() && it != arr.end() && (*it).second < t ) {
+					//cout << "&"<< endl;
+					if ((delq == 0) && (i >= k ) && ((*it).first == i-k) ) {
+						cout << " delete " << (*it).first << " ";
+						arr.erase(it);
+						delq = 1;
+						if (it != arr.begin()) --it;
+						
 					}
 					it++;
-					
-
 				}
-			}
 
-			
-			
-			
-			
-
-			if (arr.empty()) {
-				arr.push_back(make_pair(i,t));
-			} else {
 				arr.insert(it, make_pair(i,t));
+			} else {
+				arr.push_back(make_pair(i,t));	
 			}
 
 			
 			
-			if ((i >= k ) && (del==0)) {
-				it--;
+			
+			
+			if ((i >= k ) && (delq == 0)) {
+				if (it != arr.begin()) --it;
 				for (; it < arr.end(); it++ ){
-				// /cout << "!" << (*it).first << "!" ;
+				//cout << "!" << (*it).first << "!" ;
 					if ((*it).first == i-k) {
-						//arr.erase(it);
-						itdel = it;
-						del = 1;
-						//break;
+						cout << " delete " << (*it).first << " ";
+						arr.erase(it);
+			
+						break;
 					}
 				}
 				
 			}
-
-			if (del == 1) {
-				arr.erase(itdel);
-			}
-			/*
+			
 			cout << endl ;
 			for (int j = 0; j < arr.size()  ; j++) {
 				cout << arr[j].second<<"|"<<arr[j].first << " ";
 			}  cout << " " << i-k<< endl;
-			*/	
+				
 			
 			
 
