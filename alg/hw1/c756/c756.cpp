@@ -18,18 +18,18 @@ class mydeque {
 
 		int _next(const int nexti) {
 			
-				if (nexti == _size-1) {
+				if (nexti == _size - 1) {
 					return 0;
 				}
-				return nexti+1;
+				return nexti + 1;
 			
 		}
 
 		int _prev(const int previ) {
 				if (previ == 0) {
-					return _size-1;
+					return _size - 1;
 				}
-				return previ-1;
+				return previ - 1;
 			
 		}
 	public:
